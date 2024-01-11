@@ -1,7 +1,8 @@
 plugins {
-    java
+    id "java"
     id("org.springframework.boot") version "3.2.1"
     id("io.spring.dependency-management") version "1.1.4"
+    id 'com.google.cloud.tools.jib' version '3.2.1'
 }
 
 group = "com.example"
@@ -9,12 +10,6 @@ version = "0.0.1-SNAPSHOT"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
-}
-
-configurations {
-    compileOnly {
-        extendsFrom(configurations.annotationProcessor.get())
-    }
 }
 
 repositories {
@@ -28,7 +23,10 @@ dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
-
-tasks.withType<Test> {
-    useJUnitPlatform()
+jib {
+    //from.image=<base image> - optional parameter, plugin can detect what Java base image to use
+    container {
+        jvmFlags = ["-XX:MaxRAMPercentage=<max-ram-percentage>"]
+    }
 }
+
